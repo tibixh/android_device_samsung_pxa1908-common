@@ -12,16 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Inherit from mrvl-common
--include device/samsung/mrvl-common/BoardConfigCommon.mk
-
 COMMON_PATH := device/samsung/pxa1908-common
 
 include $(COMMON_PATH)/board/*.mk
 
 TARGET_SYSTEM_PROP := $(COMMON_PATH)/system.prop
 
+# Bootloader
+TARGET_NO_BOOTLOADER := true
+
+# Kernel
+BOARD_CUSTOM_MKBOOTIMG := mkbootimg
+
+# MRVL
+BOARD_USES_MRVL_HARDWARE := true
+BOARD_USES_MARVELL_HWC_ENHANCEMENT := true
+LOCAL_CFLAGS += -DMARVELL_HWC_ENHANCEMENT
+
+# Power
+TARGET_POWERHAL_VARIANT := mrvl
+
 # Board specific headers
+BOARD_VENDOR := samsung
 TARGET_SPECIFIC_HEADER_PATH := $(COMMON_PATH)/include
 
 BOARD_PROVIDES_MKBOOTIMG := true
@@ -32,8 +44,15 @@ BOARD_MKIMAGE_MRVL := true
 
 BOARD_CUSTOM_BOOTIMG_MK := hardware/marvell/bootimage/mkbootimg.mk
 
+# Architecture
+TARGET_ARCH         := arm
+TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_CPU_VARIANT  := cortex-a53
+TARGET_CPU_ABI      := armeabi-v7a
+TARGET_CPU_ABI2     := armeabi
+
 # CMHW
-#BOARD_HARDWARE_CLASS += $(COMMON_PATH)/cmhw
+BOARD_HARDWARE_CLASS += hardware/samsung/cmhw
 
 # Custom RIL class
 BOARD_RIL_CLASS := ../../../$(COMMON_PATH)/ril
@@ -46,6 +65,8 @@ TARGET_INIT_VENDOR_LIB := libinit_pxa1908
 #TARGET_UNIFIED_DEVICE := true
 
 # Display & Graphics
+TARGET_USES_ION := true
+MRVL_ION := true
 BOARD_EGL_CFG := $(COMMON_PATH)/configs/egl/egl.cfg
 USE_OPENGL_RENDERER := true
 ENABLE_WEBGL := true
@@ -73,3 +94,6 @@ ENABLE_WEBGL := true
 BOARD_USE_SKIA_LCDTEXT := true
 BOARD_NEEDS_CUTILS_LOG := true
 BOARD_USES_HWCOMPOSER := true
+
+# Recovery
+BOARD_HAS_DOWNLOAD_MODE := true
